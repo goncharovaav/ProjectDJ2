@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>Добро пожаловать, {{ request.user.first_name }}!</h1>
+        <a href="{% url 'logout' %}" class="btn-logout">Выход</a>
+    </div>
+    <p class="profile-text">Вы успешно вошли в личный кабинет.</p>
+</div>
+</body>
+</html>
