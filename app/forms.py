@@ -67,3 +67,36 @@ class ApplicationForm(forms.ModelForm):
             if image.size > 2 * 1024 * 1024:
                 raise forms.ValidationError("Максимальный размер файла не должен превышать 2 мб")
         return image
+
+
+class AdminActionForm(forms.ModelForm):
+    """Специальная форма для валидации действий администратора в панели управления"""
+
+    class Meta:
+        # Указываем, что форма управляет записями из модели Application (Заявка)
+        model = Application
+        # Администратор может изменять только три этих поля
+        fields = ['status', 'comment', 'design_image']
+
+    def clean(self):
+        """Метод сквозной валидации полей формы перед сохранением в БД"""
+        # Сначала получаем все очищенные данные формы, которые ввел админ
+        cleaned_data = super().clean()
+        status = cleaned_data.get('status')
+        comment = cleaned_data.get('comment')
+        design_image = cleaned_data.get('design_image')
+
+        if self.instance and self.instance.pk:
+            current_status = Application.objects.get(pk=self.instance.pk).status
+
+            if current_status in ['in_progress', 'completed'] and status != current_status:
+                raise forms.ValidationError(
+                    "Критическая ошибка: нельзя изменить статус у заявки, которая уже была обработана!")
+
+        if status == 'in_progress' and not comment:
+            raise forms.ValidationError({"comment": "При принятии заявки в работу вы обязаны указать комментарий."})
+
+        if status == 'completed' and not design_image:
+            raise forms.ValidationError(
+                {"design_image": "При завершении заявки вы обязаны загрузить изображение готового дизайна."})
+        return cleaned_data
