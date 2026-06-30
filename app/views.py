@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import  login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
+from .models import Application
+from .forms import ApplicationForm
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -45,4 +47,37 @@ def logout_view(request):
 def profile_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    return render(request, 'app/profile.html')
+    status_filter = request.GET.get('status')
+    user_applications = Application.objects.filter(user=request.user)
+    if status_filter in ['new', 'in-progress', 'completed']:
+        user_applications = user_applications.filter(status=status_filter)
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.user = request.user
+            application.save()
+            return redirect('profile')
+    else:
+        form = ApplicationForm()
+    context = {
+        'applications': user_applications,
+        'form': form,
+        'status_filter': status_filter,
+    }
+
+    return render(request, 'app/profile.html', context)
+
+def delete_application_view(request, pk):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    try:
+        application = Application.objects.get(pk=pk, user=request.user)
+
+        if application.status == 'new':
+            application.delete()
+
+    except Application.DoesNotExist:
+        pass
+    return redirect('profile')

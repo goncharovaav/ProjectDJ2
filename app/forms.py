@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 import re
 
+from app.models import Application
+
+
 class RegistrationForm(forms.ModelForm):
     fio = forms.CharField(max_length=150, label='Fio', widget=forms.TextInput(attrs={'class':'form-control'}))
     password =  forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={'class':'form-control'}))
@@ -40,3 +43,27 @@ class RegistrationForm(forms.ModelForm):
         if password and password_confirm and password != password_confirm:
             raise forms.ValidationError({"password_confirm": "Введенные пароли не совпадают"})
         return cleaned_data
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['title', 'description', 'category', 'image']
+        labels = {
+            'title': 'Название заявки',
+            'description': 'Описание(что необходимо сделать)',
+            'category': 'Выбор категории',
+            'image': 'План помещения или фото',
+        }
+        widgets = {
+            'title': forms.TextInput(),
+            'description': forms.Textarea(attrs={'row': 4}),
+            'category': forms.Select(),
+            'image': forms.FileInput(),
+        }
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if image.size > 2 * 1024 * 1024:
+                raise forms.ValidationError("Максимальный размер файла не должен превышать 2 мб")
+        return image

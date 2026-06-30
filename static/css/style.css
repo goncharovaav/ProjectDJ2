@@ -1,0 +1,145 @@
+.profile-container-wide {
+    max-width: 1100px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-logout {
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+}
+
+.card-section {
+    margin-bottom: 35px;
+}
+
+.create-form {
+    background: #fdfdfd;
+    border: 1px solid #eef0f2;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.form-group-row {
+    margin-bottom: 15px;
+}
+
+.form-group-row label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group-row input, .form-group-row textarea, .form-group-row select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-submit-app {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-section {
+    background: #e9ecef;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.filter-link {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+    font-weight: 500;
+}
+
+.filter-link.active {
+    color: #212529;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.app-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.app-table th, .app-table td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.app-table th {
+    background-color: #f1f3f5;
+}
+
+.badge-new {
+    background: #ffc107;
+    color: #212529;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.badge-progress {
+    background: #17a2b8;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.badge-success {
+    background: #28a745;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.btn-delete {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-delete:hover {
+    text-decoration: underline;
+}
+
+.disabled-text {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.admin-comment {
+    background: #fff3cd;
+    padding: 5px;
+    border-left: 3px solid #ffc107;
+    margin: 0;
+    font-size: 14px;
+}
