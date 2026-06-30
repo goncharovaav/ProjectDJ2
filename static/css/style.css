@@ -59,6 +59,47 @@ header {
     padding: 40px 20px;
 }
 
+.btn-primary-link, .btn-submit, .btn-save, .btn-submit-app {
+    display: inline-block;
+    background-color: #a5957a;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+    text-align: center;
+}
+.btn-primary-link:hover, .btn-submit:hover, .btn-save:hover, .btn-submit-app:hover {
+    background-color: #8c7d63;
+}
+
+.btn-inline {
+    width: auto;
+    padding: 0 20px;
+}
+
+.btn-small {
+    font-size: 15px;
+    padding: 5px 10px;
+    width: 100%;
+}
+
+.btn-green {
+    background-color: #6b8e23;
+}
+
+.btn-green:hover {
+    background-color: #55721c;
+}
+
+.btn-delete {
+    color: #cd5c5c;
+    text-decoration: none;
+    font-weight: bold;
+}
 .welcome-banner {
     text-align: center;
     padding: 60px 20px;
@@ -73,22 +114,6 @@ header {
 .welcome-banner p {
     color: #7a6e5d;
     margin-bottom: 20px;
-}
-
-.btn-primary-link, .btn-submit, .btn-save, .btn-submit-app {
-    display: inline-block;
-    background-color: #a5957a;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
-.btn-primary-link:hover, .btn-submit:hover, .btn-save:hover, .btn-submit-app:hover {
-    background-color: #8c7d63;
 }
 
 .counter-box {
@@ -172,6 +197,16 @@ header {
     outline: 2px solid #a5957a;
 }
 
+.create-form {
+    background-color: #f3f0eb;
+    border: 1px solid #e3ded6;
+    padding: 30px;
+}
+.profile-header h1 {
+    font-size: 32px;
+    color: #4a3e2e;
+    margin-bottom: 30px;
+}
 .filter-section {
     background: #f3f0eb;
     padding: 15px;
@@ -199,25 +234,122 @@ header {
 }
 .app-table th {
     background-color: #f3f0eb;
+    color: #4a3e2e;
 }
-.badge-new {
-    color: #b8860b;
+.app-id {
+    display: block;
     font-weight: bold;
 }
-.badge-progress {
-    color: #cd853f;
-    font-weight: bold;
+.app-date-sub {
+    font-size: 14px;
+    color: #7a6e5d;
 }
-.badge-success {
-    color: #6b8e23;
-    font-weight: bold;
+.app-table-title {
+    display: block;
+    font-size: 22px;
+    color: #4a3e2e;
 }
-.btn-delete {
-    color: #cd5c5c;
-    text-decoration: none;
-    font-weight: bold;
+.app-table-cat {
+    font-size: 15px;
+    color: #7a6e5d;
+    font-style: italic;
+}
+.app-table-desc {
+    font-size: 18px;
+    margin-top: 8px;
 }
 
+.badge-new { color: #b8860b; font-weight: bold; }
+.badge-progress { color: #cd853f; font-weight: bold; }
+.badge-success { color: #6b8e23; font-weight: bold; }
+.disabled-text { color: #7a6e5d; font-style: italic; }
+
+.admin-comment-block {
+    background-color: #f3f0eb;
+    padding: 8px 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-left: 3px solid #a5957a;
+}
+.user-comment-notice {
+    font-size: 16px;
+    color: #a5957a;
+    margin-top: 5px;
+}
+.admin-category-box {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #e3ded6;
+    margin-bottom: 40px;
+}
+
+.category-add-form {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.category-add-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #c7bfae;
+}
+
+.category-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.category-tag {
+    background-color: #f3f0eb;
+    padding: 5px 15px;
+    border: 1px solid #e3ded6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btn-delete-tag {
+    background: none;
+    border: none;
+    color: #cd5c5c;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.admin-actions-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.status-inline-form {
+    border-bottom: 1px dashed #c7bfae;
+    padding-bottom: 10px;
+}
+.status-inline-form:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.status-inline-form input[type="text"] {
+    padding: 6px;
+    font-size: 15px;
+    margin-bottom: 5px;
+    width: 100%;
+    border: 1px solid #c7bfae;
+}
+.status-inline-form input[type="file"] {
+    font-size: 14px;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.file-label-text {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 3px;
+    font-weight: bold;
+    color: #4a3e2e;
+}
 .error-box {
     background: #fbebeb;
     color: #a94442;
@@ -230,7 +362,11 @@ header {
     font-size: 16px;
     margin-top: 5px;
 }
-
+.success-box {
+    background-color: #ebeffb;
+    color: #425ba9;
+    border-left: 5px solid #007bff;
+}
 .main-footer {
     background-color: #4a3e2e;
     color: #c7bfae;

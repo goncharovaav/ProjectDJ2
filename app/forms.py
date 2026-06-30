@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
 import re
-
 from app.models import Application
 
 

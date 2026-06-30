@@ -5,72 +5,184 @@
 {% block content %}
 <div class="profile-container-wide">
     <div class="profile-header">
-        <h1>Рады видеть вас, {{ request.user.first_name }}!</h1>
+        <h1>Личный кабинет: {{ request.user.username }} {% if request.user.is_staff %}(Администратор){% endif %}</h1>
     </div>
 
-    <div class="card-section">
-        <h3>Создать новую заявку</h3>
-        <form method="post" enctype="multipart/form-data" class="create-form">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group-row">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error-text">{{ field.errors|striptags }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn-submit-app">Отправить заявку</button>
-        </form>
-    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error-box {% if message.tags == 'success' %}success-box{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-    <div class="filter-section">
-        <strong>Статус:</strong>
-        <a href="{% url 'profile' %}" class="filter-link {% if not status_filter %}active{% endif %}">Все</a> | 
-        <a href="{% url 'profile' %}?status=new" class="filter-link {% if status_filter == 'new' %}active{% endif %}">Новые</a> | 
-        <a href="{% url 'profile' %}?status=in_progress" class="filter-link {% if status_filter == 'in_progress' %}active{% endif %}">В работе</a> | 
-        <a href="{% url 'profile' %}?status=completed" class="filter-link {% if status_filter == 'completed' %}active{% endif %}">Выполненные</a>
-    </div>
+    {% if request.user.is_staff %}
+        <div class="card-section admin-category-box">
+            <h3>Управление категориями заявок</h3>
 
-    <div class="card-section">
-        <h3>Ваш список заявок</h3>
-        {% if applications %}
+            <form method="post" class="category-add-form">
+                {% csrf_token %}
+                <input type="text" name="category_name" placeholder="Название новой категории" required>
+                <button type="submit" name="add_category" class="btn-submit btn-inline">Добавить</button>
+            </form>
+
+            <h4>Текущие категории:</h4>
+            <div class="category-tags-list">
+                {% for cat in categories %}
+                    <div class="category-tag">
+                        <span>{{ cat.name }}</span>
+                        <form method="post" onsubmit="return confirm('Удаление категории приведет к удалению ВСЕХ связанных заявок! Продолжить?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="category_id" value="{{ cat.id }}">
+                            <button type="submit" name="delete_category" class="btn-delete-tag">&times;</button>
+                        </form>
+                    </div>
+                {% empty %}
+                    <p class="disabled-text">Категорий пока нет.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card-section">
+            <h3>Управление заявками пользователей</h3>
             <table class="app-table">
                 <thead>
                     <tr>
-                        <th>Дата</th>
-                        <th>Название / Описание</th>
+                        <th>ID / Дата</th>
+                        <th>Пользователь</th>
+                        <th>Заявка</th>
+                        <th>Статус</th>
+                        <th>Действия администратора</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>
+                                <span class="app-id">№{{ app.id }}</span>
+                                <span class="app-date-sub">{{ app.created_at|date:"d.m.Y H:i" }}</span>
+                            </td>
+                            <td><strong>{{ app.user.username }}</strong></td>
+                            <td>
+                                <strong class="app-table-title">{{ app.title }}</strong>
+                                <span class="app-table-cat">Категория: {{ app.category.name }}</span>
+                                <p class="app-table-desc">{{ app.description }}</p>
+                                {% if app.comment %}
+                                    <div class="admin-comment-block">
+                                        <strong>Комментарий:</strong> {{ app.comment }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if app.status == 'new' %}<span class="badge-new">Новая</span>
+                                {% elif app.status == 'in_progress' %}<span class="badge-progress">В работе</span>
+                                {% elif app.status == 'completed' %}<span class="badge-success">Выполнено</span>{% endif %}
+                            </td>
+                            <td>
+                                <div class="admin-actions-box">
+                                    {% if app.status == 'new' %}
+                                        <form method="post" class="status-inline-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="app_id" value="{{ app.id }}">
+                                            <input type="hidden" name="new_status" value="in_progress">
+                                            <input type="text" name="comment" placeholder="Обязательный комментарий" required>
+                                            <button type="submit" name="change_status" class="btn-submit btn-small">В работу</button>
+                                        </form>
+                                    {% endif %}
+
+                                    {% if app.status == 'new' or app.status == 'in_progress' %}
+                                        <form method="post" enctype="multipart/form-data" class="status-inline-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="app_id" value="{{ app.id }}">
+                                            <input type="hidden" name="new_status" value="completed">
+                                            <label class="file-label-text">Дизайн (Обязательно):</label>
+                                            <input type="file" name="design_image" accept="image/*" required>
+                                            <button type="submit" name="change_status" class="btn-submit btn-small btn-green">Выполнить</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="disabled-text">Статус окончательный</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="disabled-text">Заявок от пользователей пока нет.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="card-section">
+            <h3>Оставить новую заявку на дизайн</h3>
+            <form method="post" enctype="multipart/form-data" class="create-form">
+                {% csrf_token %}
+                <div class="form-group-row">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+                <div class="form-group-row">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+                <div class="form-group-row">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                </div>
+                <div class="form-group-row">
+                    {{ form.image.label_tag }}
+                    {{ form.image }}
+                </div>
+                <button type="submit" class="btn-submit-app">Отправить заявку</button>
+            </form>
+        </div>
+
+        <div class="card-section">
+            <h3>Мои заявки</h3>
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Название</th>
                         <th>Категория</th>
                         <th>Статус</th>
                         <th>Действие</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for app in applications %}
-                    <tr>
-                        <td>{{ app.created_at|date:"d.m.Y H:i" }}</td>
-                        <td><strong>{{ app.title }}</strong><br><small>{{ app.description }}</small></td>
-                        <td>{{ app.category.name }}</td>
-                        <td>
-                            {% if app.status == 'new' %}<span class="badge-new">Новая</span>{% endif %}
-                            {% if app.status == 'in_progress' %}<span class="badge-progress">В работе</span>{% endif %}
-                            {% if app.status == 'completed' %}<span class="badge-success">Выполнено</span>{% endif %}
-                        </td>
-                        <td>
-                            {% if app.status == 'new' %}
-                                <a href="{% url 'delete_application' app.pk %}" class="btn-delete" onclick="return confirm('Удалить?');">Удалить</a>
-                            {% else %}
-                                <span class="disabled-text">Заблокировано</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
+                    {%     for app in applications %}
+                        <tr>
+                            <td>
+                                <strong class="app-table-title">{{ app.title }}</strong>
+                                {% if app.comment %}
+                                    <div class="user-comment-notice">
+                                        <em>Комментарий админа: {{ app.comment }}</em>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ app.category.name }}</td>
+                            <td>
+                                {% if app.status == 'new' %}<span class="badge-new">Новая</span>
+                                {% elif app.status == 'in_progress' %}<span class="badge-progress">В работе</span>
+                                {% elif app.status == 'completed' %}<span class="badge-success">Выполнено</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if app.status == 'new' %}
+                                    <a href="{% url 'delete_application' app.pk %}" class="btn-delete" onclick="return confirm('Вы уверены, что хотите удалить эту заявку?');">Удалить</a>
+                                {% else %}
+                                    <span class="disabled-text">Удаление невозможно</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="disabled-text">Вы еще не создали ни одной заявки.</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>Заявок не найдено.</p>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
