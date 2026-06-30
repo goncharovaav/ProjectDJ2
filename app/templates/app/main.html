@@ -1,0 +1,45 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Главная — Студия дизайна Design.pro{% endblock %}
+
+{% block content %}
+<div class="welcome-banner">
+    <h1>Дизайн-студия «Design.pro»</h1>
+    <p>Мы создаем пространство, в котором хочется жить и работать.</p>
+    {% if not request.user.is_authenticated %}
+        <div class="banner-buttons">
+            <a href="{% url 'login' %}" class="btn-primary-link">Начать работу (Вход)</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="main-container-inside">
+    <div class="counter-box">
+        <h3>Сейчас в разработке</h3>
+        <p class="counter-number">{{ in_progress_count }}</p>
+        <p class="counter-text">заявок на дизайн интерьера принято в работу нашими сотрудниками</p>
+    </div>
+
+    <div class="gallery-section">
+        <h2>Последние выполненные проекты</h2>
+        {% if completed_applications %}
+            <div class="projects-grid">
+            {% for app in completed_applications %}
+                <div class="project-card">
+                    {% if app.design_image %}
+                        <img src="{{ app.design_image.url }}" alt="{{ app.title }}" class="project-img">
+                    {% endif %}
+                    <div class="project-info">
+                        <h4 class="project-title">{{ app.title }}</h4>
+                        <p class="project-category">Категория: <strong>{{ app.category.name }}</strong></p>
+                        <p class="project-date">Выполнен: {{ app.created_at|date:"d.m.Y" }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-projects">Наши новые работы появятся здесь совсем скоро!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

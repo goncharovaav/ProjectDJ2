@@ -1,24 +1,17 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Личный кабинет</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="body-profile">
+{% extends 'app/base.html' %}
 
+{% block title %}Личный кабинет — Design.pro{% endblock %}
+
+{% block content %}
 <div class="profile-container-wide">
     <div class="profile-header">
-        <h1>Личный кабинет: {{ request.user.first_name }}</h1>
-        <a href="{% url 'logout' %}" class="btn-logout">Выйти из профиля</a>
+        <h1>Рады видеть вас, {{ request.user.first_name }}!</h1>
     </div>
 
     <div class="card-section">
-        <h3>Создать новую заявку на дизайн</h3>
+        <h3>Создать новую заявку</h3>
         <form method="post" enctype="multipart/form-data" class="create-form">
             {% csrf_token %}
-
             {% for field in form %}
                 <div class="form-group-row">
                     {{ field.label_tag }}
@@ -28,32 +21,28 @@
                     {% endif %}
                 </div>
             {% endfor %}
-
-            <button type="submit" class="btn-submit-app">Отправить заявку на модерацию</button>
+            <button type="submit" class="btn-submit-app">Отправить заявку</button>
         </form>
     </div>
 
     <div class="filter-section">
-        <strong>Фильтровать по статусу:</strong>
-        <a href="{% url 'profile' %}" class="filter-link {% if not current_filter %}active{% endif %}">Все заявки</a> |
-        <a href="{% url 'profile' %}?status=new" class="filter-link {% if current_filter == 'new' %}active{% endif %}">Новые</a> |
-        <a href="{% url 'profile' %}?status=in_progress" class="filter-link {% if current_filter == 'in_progress' %}active{% endif %}">В работе</a> |
-        <a href="{% url 'profile' %}?status=completed" class="filter-link {% if current_filter == 'completed' %}active{% endif %}">Выполненные</a>
+        <strong>Статус:</strong>
+        <a href="{% url 'profile' %}" class="filter-link {% if not status_filter %}active{% endif %}">Все</a> | 
+        <a href="{% url 'profile' %}?status=new" class="filter-link {% if status_filter == 'new' %}active{% endif %}">Новые</a> | 
+        <a href="{% url 'profile' %}?status=in_progress" class="filter-link {% if status_filter == 'in_progress' %}active{% endif %}">В работе</a> | 
+        <a href="{% url 'profile' %}?status=completed" class="filter-link {% if status_filter == 'completed' %}active{% endif %}">Выполненные</a>
     </div>
 
     <div class="card-section">
-        <h3>Ваши заявки на проектирование</h3>
-
+        <h3>Ваш список заявок</h3>
         {% if applications %}
             <table class="app-table">
                 <thead>
                     <tr>
-                        <th>Дата создания</th>
-                        <th>Название</th>
+                        <th>Дата</th>
+                        <th>Название / Описание</th>
                         <th>Категория</th>
                         <th>Статус</th>
-                        <th>План помещения</th>
-                        <th>Результат работы / Комментарий</th>
                         <th>Действие</th>
                     </tr>
                 </thead>
@@ -65,26 +54,14 @@
                         <td>{{ app.category.name }}</td>
                         <td>
                             {% if app.status == 'new' %}<span class="badge-new">Новая</span>{% endif %}
-                            {% if app.status == 'in-progress' %}<span class="badge-progress">Принята в работу</span>{% endif %}
+                            {% if app.status == 'in_progress' %}<span class="badge-progress">В работе</span>{% endif %}
                             {% if app.status == 'completed' %}<span class="badge-success">Выполнено</span>{% endif %}
                         </td>
                         <td>
-                            <a href="{{ app.image.url }}" target="_blank">Открыть план</a>
-                        </td>
-                        <td>
-                            {% if app.status == 'completed' and app.design_image %}
-                                <a href="{{ app.design_image.url }}" target="_blank">Посмотреть дизайн</a>
-                            {% elif app.status == 'in_progress' and app.comment %}
-                                <p class="admin-comment"><em>Заметка студии:</em> {{ app.comment }}</p>
-                            {% else %}
-                                <span class="text-muted">Ожидает обработки</span>
-                            {% endif %}
-                        </td>
-                        <td>
                             {% if app.status == 'new' %}
-                                <a href="{% url 'delete_application' app.pk %}" class="btn-delete" onclick="return confirm('Вы уверены, что хотите удалить эту заявку?');">Удалить</a>
+                                <a href="{% url 'delete_application' app.pk %}" class="btn-delete" onclick="return confirm('Удалить?');">Удалить</a>
                             {% else %}
-                                <span class="disabled-text">Недоступно</span>
+                                <span class="disabled-text">Заблокировано</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -92,11 +69,8 @@
                 </tbody>
             </table>
         {% else %}
-            <p class="no-apps">У вас пока нет заявок в данной категории.</p>
+            <p>Заявок не найдено.</p>
         {% endif %}
     </div>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

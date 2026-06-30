@@ -1,20 +1,19 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход в систему</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="body-login">
-<div class="login-container">
+{% extends 'app/base.html' %}
+
+{% block title %}Авторизация — Design.pro{% endblock %}
+
+{% block content %}
+<div class="login-page-container">
     <div class="login-card">
-        <h2 class="login-title">Вход</h2>
+        <h2 class="login-title">Вход в систему</h2>
+
         <form method="post">
             {% csrf_token %}
+
             {% if form.errors %}
-                <div class="error-box">Неверный логин или пароль</div>
+                <div class="error-box">Неверный логин или пароль.</div>
             {% endif %}
+
             <div class="form-group">
                 {{ form.username.label_tag }}
                 {{ form.username }}
@@ -23,12 +22,13 @@
                 {{ form.password.label_tag }}
                 {{ form.password }}
             </div>
+
             <button type="submit" class="btn-submit">Войти</button>
         </form>
+
         <div class="link-box">
-            <a href="{% url 'register' %}">Нет аккаунта? РЕгистрация</a>
+            <a href="{% url 'register' %}">Нет аккаунта? Зарегистрироваться</a>
         </div>
     </div>
 </div>
-</body>
-</html>
+{% endblock %}

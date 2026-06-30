@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="body-register">
+{% extends 'app/base.html' %}
+
+{% block title %}Регистрация — Design.pro{% endblock %}
+
+{% block content %}
 <div class="register-container">
     <div class="register-card">
-        <h2 class="register-title">Регистрация</h2>
-
+        <h2 class="register-title">Регистрация нового аккаунта</h2>
+        
         <form method="post">
             {% csrf_token %}
-
+            
             {% if form.non_field_errors %}
                 <div class="error-box">
                     {{ form.non_field_errors }}
@@ -32,10 +28,6 @@
 
             <button type="submit" class="btn-save">Зарегистрироваться</button>
         </form>
-        <div class="link-box">
-            <a href="{% url 'login' %}">Уже есть аккаунт? Войти</a>
-        </div>
     </div>
 </div>
-</body>
-</html>
+{% endblock %}

@@ -13,7 +13,7 @@ class Category(models.Model):
 class Application(models.Model):
     STATUS_CHOICES = [
         ('new', 'Новая'),
-        ('in-progress', 'Принято в работу'),
+        ('in_progress', 'Принято в работу'),
         ('completed', 'Выполнено'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")

@@ -21,6 +21,18 @@ def register_view(request):
         form = RegistrationForm()
     return render(request, 'app/register.html', {'form': form})
 
+def main_view(request):
+    completed_applications = Application.objects.filter(status='completed')[:4]
+
+    in_progress_count = Application.objects.filter(status='in_progress').count()
+
+    context = {
+        'completed_applications': completed_applications,
+        'in_progress_count': in_progress_count,
+    }
+    return render(request, 'app/main.html', context)
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('profile')
@@ -49,7 +61,7 @@ def profile_view(request):
         return redirect('login')
     status_filter = request.GET.get('status')
     user_applications = Application.objects.filter(user=request.user)
-    if status_filter in ['new', 'in-progress', 'completed']:
+    if status_filter in ['new', 'in_progress', 'completed']:
         user_applications = user_applications.filter(status=status_filter)
     if request.method == 'POST':
         form = ApplicationForm(request.POST, request.FILES)

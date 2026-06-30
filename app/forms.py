@@ -70,17 +70,12 @@ class ApplicationForm(forms.ModelForm):
 
 
 class AdminActionForm(forms.ModelForm):
-    """Специальная форма для валидации действий администратора в панели управления"""
 
     class Meta:
-        # Указываем, что форма управляет записями из модели Application (Заявка)
         model = Application
-        # Администратор может изменять только три этих поля
         fields = ['status', 'comment', 'design_image']
 
     def clean(self):
-        """Метод сквозной валидации полей формы перед сохранением в БД"""
-        # Сначала получаем все очищенные данные формы, которые ввел админ
         cleaned_data = super().clean()
         status = cleaned_data.get('status')
         comment = cleaned_data.get('comment')
