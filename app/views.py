@@ -108,7 +108,6 @@ def profile_view(request):
 
             return redirect('profile')
 
-        # Данные для вывода админу
         all_applications = Application.objects.all().order_by('-created_at')
         all_categories = Category.objects.all()
 
